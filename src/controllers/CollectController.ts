@@ -13,7 +13,7 @@ class CollectController {
     if (sensor && sensor.id) {
       const collect = new Collect()
       collect.moment = moment === ""? null : moment
-      collect.value = value
+      collect.value = value === ""? null : value
       collect.sensor = sensor
       const r = await AppDataSource.manager.save(Collect, collect).catch((e) => {
         return { error: e.message }
@@ -28,21 +28,15 @@ class CollectController {
     }
   }
 
-  /*public async update(req: Request, res: Response): Promise<Response> {
-    let { id, description, model, minrange, maxrange, accurace, startdate, enddate, unit, access } = req.body
-    description = description === ""? null : description
-    model = model === ""? null : model
-    minrange = minrange === ""? null : minrange
-    maxrange = maxrange === ""? null : maxrange
-    accurace = accurace === ""? null : accurace
-    startdate = startdate === ""? null : startdate
-    enddate = enddate === ""? null : enddate
-    unit = unit === ""? null : unit
-    access = access === ""? null : access
-    const sensor: any = await AppDataSource.manager.save(Sensor, { id, description, model, minrange, maxrange, accurace, startdate, enddate, unit, access }).catch((e) => {
+  public async update(req: Request, res: Response): Promise<Response> {
+    let { id, moment, value } = req.body
+    moment = moment === ""? null : moment
+    value = value === ""? null : value
+    console.log({ id, moment, value })
+    const collect: any = await AppDataSource.manager.save(Collect, { id, moment, value }).catch((e) => {
       return { error: e.message }
     })
-    return res.json(sensor)
+    return res.json(collect)
   }
 
   public async delete(req: Request, res: Response): Promise<Response> {
@@ -50,12 +44,12 @@ class CollectController {
     const r = await AppDataSource
       .createQueryBuilder()
       .delete()
-      .from(Sensor)
+      .from(Collect)
       .where("id=:id", { id })
       .execute()
 
     return res.json(r)
-  }*/
+  }
 
   public async listBySensor(req: Request, res: Response): Promise<Response> {
     const { idsensor} = req.body
